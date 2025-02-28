@@ -23,6 +23,58 @@ main = hspec $ do
             evaluate (eval "*" []) `shouldThrow` errorCall "Stack underflow"
             evaluate (eval "*" [Integer 2]) `shouldThrow` errorCall "Stack underflow"
 
+    context "+" $ do
+        it "adds integers" $ do
+            eval "+" [Integer 2, Integer 3] `shouldBe` [Integer 5]
+
+        it "adds floats" $ do
+            eval "+" [Integer 2, Real 3.0] `shouldBe` [Real 5.0]
+            eval "+" [Real 3.0, Integer 3] `shouldBe` [Real 6.0]
+            eval "+" [Real 4.0, Real 3.0] `shouldBe` [Real 7.0]
+
+        it "errors on too few arguments" $ do
+            evaluate (eval "+" []) `shouldThrow` errorCall "Stack underflow"
+            evaluate (eval "+" [Integer 2]) `shouldThrow` errorCall "Stack underflow"
+
+    context "-" $ do
+        it "subtracts integers" $ do
+            eval "-" [Integer 2, Integer 3] `shouldBe` [Integer -1]
+
+        it "subtracts floats" $ do
+            eval "-" [Integer 2, Real 3.0] `shouldBe` [Real -1.0]
+            eval "-" [Real 3.0, Integer 3] `shouldBe` [Real 0.0]
+            eval "-" [Real 4.0, Real 3.0] `shouldBe` [Real 1.0]
+
+        it "errors on too few arguments" $ do
+            evaluate (eval "-" []) `shouldThrow` errorCall "Stack underflow"
+            evaluate (eval "-" [Integer 2]) `shouldThrow` errorCall "Stack underflow"
+
+    context "/" $ do
+        it "divides integers" $ do
+            eval "/" [Integer 3, Integer 2] `shouldBe` [Integer 1]
+
+        it "divides floats" $ do
+            eval "/" [Integer 3, Real 2.0] `shouldBe` [Real 1.5]
+            eval "/" [Real 3.0, Integer 3] `shouldBe` [Real 1.0]
+            eval "/" [Real 4.0, Real 3.0] `shouldBe` [Real (4.0/3.0)]
+
+        it "errors on too few arguments" $ do
+            evaluate (eval "/" []) `shouldThrow` errorCall "Stack underflow"
+            evaluate (eval "/" [Integer 2]) `shouldThrow` errorCall "Stack underflow"
+
+    context "^" $ do
+        it "powers integers" $ do
+            eval "^" [Integer 3, Integer 2] `shouldBe` [Integer 9]
+
+        it "powers floats" $ do
+            eval "^" [Integer 3, Real 2.0] `shouldBe` [Real 9.0]
+            eval "^" [Real 3.0, Integer 3] `shouldBe` [Real 27.0]
+            eval "^" [Real 4.0, Real 3.0] `shouldBe` [Real 64.0]
+
+        it "errors on too few arguments" $ do
+            evaluate (eval "^" []) `shouldThrow` errorCall "Stack underflow"
+            evaluate (eval "^" [Integer 2]) `shouldThrow` errorCall "Stack underflow"
+
         -- this does not work, seems to be a HSpec bug
         -- it "errors on non-numeric inputs" $ do
         --    evaluate(eval "*" [Real 3.0, Id "x"]) `shouldThrow` anyException
