@@ -25,6 +25,20 @@ eval "+" (x:y:tl) = (Real $ toFloat x + toFloat y) : tl
 -- any remaining cases are stacks too short
 eval "+" _ = error("Stack underflow")
 
+-- 3. Subtraction
+eval "-" (Integer x: Integer y:tl) = Integer (y-x) : tl
+eval "-" (x:y:tl) = (Real $ toFloat y - toFloat x) : tl
+eval "-" _ = error("Stack underflow")
+
+-- 4. Division
+eval "/" (Integer x: Integer y:tl) = Integer (y `div` x) : tl
+eval "/" (x:y:tl) = (Real $ toFloat y / toFloat x) : tl
+eval "/" _ = error("Stack underflow")
+
+-- 5. Power
+eval "^" (Integer x: Integer y:tl) = Integer (y^x) : tl
+eval "^" (x:y:tl) = (Real $ toFloat y ** toFloat x) : tl
+eval "^" _ = error("Stack underflow")
 
 -- Duplicate the element at the top of the stack
 eval "DUP" (x:tl) = (x:x:tl)
