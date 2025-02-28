@@ -75,6 +75,10 @@ main = hspec $ do
             evaluate (eval "^" []) `shouldThrow` errorCall "Stack underflow"
             evaluate (eval "^" [Integer 2]) `shouldThrow` errorCall "Stack underflow"
 
+    context "CR" $ do
+      it "adds newline to stack" $ do
+        eval "CR" [] `shouldBe` [Id "\n"]
+
         -- this does not work, seems to be a HSpec bug
         -- it "errors on non-numeric inputs" $ do
         --    evaluate(eval "*" [Real 3.0, Id "x"]) `shouldThrow` anyException
