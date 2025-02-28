@@ -40,6 +40,9 @@ eval "^" (Integer x: Integer y:tl) = Integer (y^x) : tl
 eval "^" (x:y:tl) = (Real $ toFloat y ** toFloat x) : tl
 eval "^" _ = error("Stack underflow")
 
+-- CR: prints a new line (for nice formatting)
+--eval "CR" s = Id "\n" : s
+
 -- Duplicate the element at the top of the stack
 eval "DUP" (x:tl) = (x:x:tl)
 eval "DUP" [] = error("Stack underflow")
@@ -57,6 +60,10 @@ evalOut "." (Id x:tl, out) = (tl, out ++ x)
 evalOut "." (Integer i:tl, out) = (tl, out ++ (show i))
 evalOut "." (Real x:tl, out) = (tl, out ++ (show x))
 evalOut "." ([], _) = error "Stack underflow"
+
+
+-- handle CR to add newline to output
+evalOut "CR" (stack, out) = (stack, out ++ "\n")
 
 -- this has to be the last case
 -- if no special case, ask eval to deal with it and propagate output
