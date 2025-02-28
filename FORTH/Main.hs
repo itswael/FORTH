@@ -12,5 +12,5 @@ main = do
     let (stack, output) = interpret contents
     if null stack
             then
-                putStrLn output;
+                putStrLn output
             else putStrLn $ "Stack is not empty: " ++ show stack
