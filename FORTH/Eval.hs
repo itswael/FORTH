@@ -27,7 +27,7 @@ eval "+" _ = error("Stack underflow")
 
 -- 3. Subtraction
 eval "-" (Integer x: Integer y:tl) = Integer (y-x) : tl
-eval "-" (x:y:tl) = (Real $ toFloat y + toFloat x) : tl
+eval "-" (x:y:tl) = (Real $ toFloat y - toFloat x) : tl
 eval "-" _ = error("Stack underflow")
 
 -- 4. Division
