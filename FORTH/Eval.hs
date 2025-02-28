@@ -8,13 +8,22 @@ import Val
 -- takes a string and a stack and returns the stack
 -- resulting from evaluation of the function
 eval :: String -> [Val] -> [Val]
--- Multiplication
+
+-- 1. Multiplication
 -- if arguments are integers, keep result as integer
 eval "*" (Integer x: Integer y:tl) = Integer (x*y) : tl
 -- if any argument is float, make result a float
 eval "*" (x:y:tl) = (Real $ toFloat x * toFloat y) : tl 
 -- any remaining cases are stacks too short
 eval "*" _ = error("Stack underflow")
+
+-- 2. Addition
+-- if arguments are integers, keep result as integer
+eval "+" (Integer x: Integer y:tl) = Integer (x+y) : tl
+-- if any argument is float, make result a float
+eval "+" (x:y:tl) = (Real $ toFloat x + toFloat y) : tl
+-- any remaining cases are stacks too short
+eval "+" _ = error("Stack underflow")
 
 
 -- Duplicate the element at the top of the stack
