@@ -35,6 +35,11 @@ eval "/" (Integer x: Integer y:tl) = Integer (x `div` y) : tl
 eval "/" (x:y:tl) = (Real $ toFloat x / toFloat y) : tl
 eval "/" _ = error("Stack underflow")
 
+-- 5. Power
+eval "^" (Integer x: Integer y:tl) = Integer (x^y) : tl
+eval "^" (x:y:tl) = (Real $ toFloat x ** toFloat y) : tl
+eval "^" _ = error("Stack underflow")
+
 -- Duplicate the element at the top of the stack
 eval "DUP" (x:tl) = (x:x:tl)
 eval "DUP" [] = error("Stack underflow")
