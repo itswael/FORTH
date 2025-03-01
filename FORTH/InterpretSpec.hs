@@ -29,6 +29,14 @@ main = hspec $ do
         it "multiplies floats and integers" $ do
             interpret "2 2.2 3.4 * *" `shouldBe` ([Real 14.960001], "")
 
+    context "EMIT" $ do
+        it "prints character from integer" $ do
+            interpret "65 EMIT" `shouldBe` ([], "A")
+        it "prints character from real" $ do
+            interpret "66.9 EMIT" `shouldBe` ([], "B")
+        it "errors on non-numeric" $ do
+            evaluate (interpret "X EMIT") `shouldThrow` errorCall "Non-numeric argument to EMIT"
+
     context "Printout" $ do
         it "computes product and outputs" $ do
             interpret "2 6 * ." `shouldBe` ([], "12")

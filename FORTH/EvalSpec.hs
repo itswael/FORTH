@@ -102,5 +102,15 @@ main = hspec $ do
         it "errors on empty stack" $ do
             evaluate(evalOut "." ([], "")) `shouldThrow` errorCall "Stack underflow"
 
-      it "eval pass-through" $ do
-         evalOut "*" ([Real 2.0, Integer 2], "blah") `shouldBe` ([Real 4.0], "blah") 
+        it "eval pass-through" $ do
+            evalOut "*" ([Real 2.0, Integer 2], "blah") `shouldBe` ([Real 4.0], "blah")
+
+      context "EMIT" $ do
+        it "prints character from integer" $ do
+            evalOut "EMIT" ([Integer 65], "") `shouldBe` ([], "65 : A")
+        it "prints character from real (floor)" $ do
+            evalOut "EMIT" ([Real 66.9], "") `shouldBe` ([], "66 : B")
+        it "errors on non-numeric argument" $ do
+            evaluate (evalOut "EMIT" ([Id "X"], "")) `shouldThrow` errorCall "Non-numeric argument to EMIT"
+        it "errors on empty stack" $ do
+            evaluate (evalOut "EMIT" ([], "")) `shouldThrow` errorCall "Stack underflow"
