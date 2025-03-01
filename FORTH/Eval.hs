@@ -41,9 +41,6 @@ eval "^" (Integer x: Integer y:tl) = Integer (y^x) : tl
 eval "^" (x:y:tl) = (Real $ toFloat y ** toFloat x) : tl
 eval "^" _ = error("Stack underflow")
 
--- CR: prints a new line (for nice formatting)
---eval "CR" s = Id "\n" : s
-
 -- Duplicate the element at the top of the stack
 eval "DUP" (x:tl) = (x:x:tl)
 eval "DUP" [] = error("Stack underflow")
@@ -69,6 +66,12 @@ evalOut "EMIT" (x:tl, out) = case x of
     _         -> error "Non-numeric argument to EMIT"
 evalOut "EMIT" ([], _) = error "Stack underflow"
 
+-- STR: print string
+evalOut "STR" (x:tl, out) = case x of
+    Integer i -> (tl, out ++ (show i))
+    Real r    -> (tl, out ++ (show r))
+    Id s      -> (tl, out ++ (show s))
+evalOut "STR" ([], _) = error "Stack underflow"
 
 -- handle CR to add newline to output
 evalOut "CR" (stack, out) = (stack, out ++ "\n")
