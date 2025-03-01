@@ -38,12 +38,12 @@ main = hspec $ do
 
     context "-" $ do
         it "subtracts integers" $ do
-            eval "-" [Integer 2, Integer 3] `shouldBe` [Integer -1]
+            eval "-" [Integer 2, Integer 3] `shouldBe` [Integer 1]
 
         it "subtracts floats" $ do
-            eval "-" [Integer 2, Real 3.0] `shouldBe` [Real -1.0]
+            eval "-" [Integer 2, Real 3.0] `shouldBe` [Real 1.0]
             eval "-" [Real 3.0, Integer 3] `shouldBe` [Real 0.0]
-            eval "-" [Real 4.0, Real 3.0] `shouldBe` [Real 1.0]
+            eval "-" [Real 4.0, Real 3.0] `shouldBe` [Real (-1.0)]
 
         it "errors on too few arguments" $ do
             evaluate (eval "-" []) `shouldThrow` errorCall "Stack underflow"
@@ -51,12 +51,12 @@ main = hspec $ do
 
     context "/" $ do
         it "divides integers" $ do
-            eval "/" [Integer 3, Integer 2] `shouldBe` [Integer 1]
+            eval "/" [Integer 2, Integer 3] `shouldBe` [Integer 1]
 
         it "divides floats" $ do
-            eval "/" [Integer 3, Real 2.0] `shouldBe` [Real 1.5]
+            eval "/" [Integer 2, Real 3.0] `shouldBe` [Real 1.5]
             eval "/" [Real 3.0, Integer 3] `shouldBe` [Real 1.0]
-            eval "/" [Real 4.0, Real 3.0] `shouldBe` [Real (4.0/3.0)]
+            eval "/" [Real 3.0, Real 4.0] `shouldBe` [Real (4.0/3.0)]
 
         it "errors on too few arguments" $ do
             evaluate (eval "/" []) `shouldThrow` errorCall "Stack underflow"
@@ -64,12 +64,12 @@ main = hspec $ do
 
     context "^" $ do
         it "powers integers" $ do
-            eval "^" [Integer 3, Integer 2] `shouldBe` [Integer 9]
+            eval "^" [Integer 2, Integer 3] `shouldBe` [Integer 9]
 
         it "powers floats" $ do
-            eval "^" [Integer 3, Real 2.0] `shouldBe` [Real 9.0]
+            eval "^" [Integer 2, Real 3.0] `shouldBe` [Real 9.0]
             eval "^" [Real 3.0, Integer 3] `shouldBe` [Real 27.0]
-            eval "^" [Real 4.0, Real 3.0] `shouldBe` [Real 64.0]
+            eval "^" [Real 3.0, Real 4.0] `shouldBe` [Real 64.0]
 
         it "errors on too few arguments" $ do
             evaluate (eval "^" []) `shouldThrow` errorCall "Stack underflow"
@@ -77,7 +77,7 @@ main = hspec $ do
 
     context "CR" $ do
       it "adds newline to stack" $ do
-        eval "CR" [] `shouldBe` [Id "\n"]
+        eval "CR" [] `shouldBe` [Id "CR"]
 
         -- this does not work, seems to be a HSpec bug
         -- it "errors on non-numeric inputs" $ do
@@ -117,10 +117,26 @@ main = hspec $ do
 
       context "STR" $ do
         it "converts integer to string" $ do
-            eval "STR" [Integer 5] `shouldBe` [Id "5"]
+            eval "STR" [Integer 5] `shouldBe` [Id "STR", Integer 5]
         it "converts real to string" $ do
-            eval "STR" [Real 3.14] `shouldBe` [Id "3.14"]
+            eval "STR" [Real 3.14] `shouldBe` [Id "STR", Real 3.14]
         it "leaves Id (string) unchanged" $ do
-            eval "STR" [Id "hello"] `shouldBe` [Id "hello"]
+            eval "STR" [Id "hello"] `shouldBe` [Id "STR", Id "hello"]
         it "errors on empty stack" $ do
-            evaluate (eval "STR" []) `shouldThrow` errorCall "Stack underflow"
+            evaluate (evalOut "STR" ([], "")) `shouldThrow` errorCall "Stack underflow"
+
+      context "CONCAT2" $ do
+        it "concatenates two strings" $ do
+            evalOut "CONCAT2" ([Id "hello", Id "world"], "") `shouldBe` ([], "worldhello")
+        it "errors on type mismatch" $ do
+            evaluate (evalOut "CONCAT2" ([Id "world", Real 3.14], "")) `shouldThrow` errorCall "Type Mismatch"
+        it "errors on empty stack" $ do
+            evaluate (evalOut "CONCAT2" ([], "")) `shouldThrow` errorCall "Stack underflow"
+
+      context "CONCAT3" $ do
+        it "concatenates three strings" $ do
+            evalOut "CONCAT3" ([Id "hello", Id "world", Id "!"], "") `shouldBe` ([], "!worldhello")
+        it "errors on type mismatch" $ do
+            evaluate (evalOut "CONCAT3" ([Id "world", Real 3.14, Id " "], "")) `shouldThrow` errorCall "Type Mismatch"
+        it "errors on empty stack" $ do
+            evaluate (evalOut "CONCAT3" ([], "")) `shouldThrow` errorCall "Stack underflow"

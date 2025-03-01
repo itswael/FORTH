@@ -62,9 +62,21 @@ evalOut "." ([], _) = error "Stack underflow"
 -- EMIT: print character from ASCII code
 evalOut "EMIT" (x:tl, out) = case x of
     Integer i -> (tl, out ++ (show i) ++ " : " ++ [chr i])
-    Real r    -> (tl, out ++ (show r) ++ " : " ++ [chr (fromIntegral (floor r))])
+    Real r    -> (tl, out ++ (show (fromIntegral (floor r))) ++ " : " ++ [chr (fromIntegral (floor r))])
     _         -> error "Non-numeric argument to EMIT"
 evalOut "EMIT" ([], _) = error "Stack underflow"
+
+-- CONCAT2: concatenate 2 strings
+evalOut "CONCAT2" (x:y:tl, out) = case (x, y) of
+    (Id a, Id b) -> (tl, out ++ b ++ a)
+    _            -> error "Type Mismatch"
+evalOut "CONCAT2" (_, _) = error "Stack underflow"
+
+-- CONCAT3: concatenate 3 strings
+evalOut "CONCAT3" (x:y:z:tl, out) = case (x, y, z) of
+    (Id a, Id b, Id c) -> (tl, out ++ c ++ b ++ a)
+    _            -> error "Type Mismatch"
+evalOut "CONCAT3" (_, _) = error "Stack underflow"
 
 -- STR: print string
 evalOut "STR" (x:tl, out) = case x of
