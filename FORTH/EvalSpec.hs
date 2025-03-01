@@ -114,3 +114,13 @@ main = hspec $ do
             evaluate (evalOut "EMIT" ([Id "X"], "")) `shouldThrow` errorCall "Non-numeric argument to EMIT"
         it "errors on empty stack" $ do
             evaluate (evalOut "EMIT" ([], "")) `shouldThrow` errorCall "Stack underflow"
+
+      context "STR" $ do
+        it "converts integer to string" $ do
+            eval "STR" [Integer 5] `shouldBe` [Id "5"]
+        it "converts real to string" $ do
+            eval "STR" [Real 3.14] `shouldBe` [Id "3.14"]
+        it "leaves Id (string) unchanged" $ do
+            eval "STR" [Id "hello"] `shouldBe` [Id "hello"]
+        it "errors on empty stack" $ do
+            evaluate (eval "STR" []) `shouldThrow` errorCall "Stack underflow"

@@ -1,0 +1,1 @@
+1.34 STR CR 3 STR 5 STR

@@ -1,5 +1,5 @@
 -- HSpec tests for Val.hs
--- Execute: runhaskell InterpretSpec.hs
+-- Execute: run haskell InterpretSpec.hs
 
 import Test.Hspec
 import Test.QuickCheck
