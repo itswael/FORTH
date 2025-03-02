@@ -2,6 +2,26 @@
 
 A Haskell-based interpreter for a subset of FORTH, supporting basic arithmetic, stack operations, user-defined functions, and string manipulation.
 
+## Folder Structure
+```
+FORTH/
+│── FORTH/                    # Source code directory
+│   ├── output/               # Output Files Corresponding to each Test
+│   ├── tests/                # Test files 1-10
+│   ├── Eval.hs               # Functional logic
+│   ├── EvalSpec.hs           # Hspec tests for functions
+│   ├── FORTH.cabal           # build file
+│   └── Interpret.hs          # Interpreter logic
+|   │── InterpretSpec.hs      # Interpreter Hspec tests
+|   │── Main.hs               # Execution Entry Point
+|   │── Requirements.md       # Assignment Requirements documentation
+|   │── Setup.hs              # Entry point definition
+|   │── Val.hs                # Variable Type definition
+|   └── ValSpec.hs            # Variable Type definition Hspec tests
+|
+└── README.md                  # Project documentation
+```
+
 ---
 
 ## **Prerequisites**
