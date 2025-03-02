@@ -51,6 +51,7 @@ executable FORTH
                      , flow >=1.0.19
                      , hspec
                      , QuickCheck
+                     , containers
   
   -- Directories containing source files.
   -- hs-source-dirs:      

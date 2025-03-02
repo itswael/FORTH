@@ -3,12 +3,15 @@ module Val where
 
 import Data.Maybe (isJust)
 import Text.Read (readMaybe)
+import qualified Data.Map as M
 
 -- The values manipulated by FORTH
 data Val = Integer Int 
     | Real Float
     | Id String
     deriving (Show, Eq)
+
+type Env = M.Map String [String]  -- Function name → list of operations
 
 -- converts string to Val 
 -- sequence tried is Integer, Float, String

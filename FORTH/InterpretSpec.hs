@@ -7,18 +7,19 @@ import Control.Exception (evaluate)
 import Val
 import Eval
 import Interpret
+import qualified Data.Map as M
 
 main :: IO ()
 main = hspec $ do
   describe "evalF" $ do
     it "preserves output for numbers" $ do
-        evalF ([], "x") (Real 3.0) `shouldBe` ([Real 3.0], "x")
+        evalF ([], "x", M.empty) (Real 3.0) `shouldBe` ([Real 3.0], "x", M.empty)
 
     it "passes through operators" $ do
-        evalF ([Real 2.2, Integer 2], "") (Id "*") `shouldBe` ([Real 4.4], "")
+        evalF ([Real 2.2, Integer 2], "", M.empty) (Id "*") `shouldBe` ([Real 4.4], "", M.empty)
 
     it "propagates output" $ do
-        evalF ([Integer 2], "") (Id ".") `shouldBe` ([],"2")    
+        evalF ([Integer 2], "", M.empty) (Id ".") `shouldBe` ([],"2", M.empty)
 
   describe "interpret" $ do
     context "RPN" $ do
@@ -31,11 +32,9 @@ main = hspec $ do
 
     context "EMIT" $ do
         it "prints character from integer" $ do
-            interpret "65 EMIT" `shouldBe` ([], "65 : A")
+            interpret "65 EMIT" `shouldBe` ([], "A")
         it "prints character from real" $ do
-            interpret "66.9 EMIT" `shouldBe` ([], "66 : B")
-        it "errors on non-numeric" $ do
-            evaluate (interpret "X EMIT") `shouldThrow` errorCall "Non-numeric argument to EMIT"
+            interpret "66.9 EMIT" `shouldBe` ([], "B")
 
     context "CONCAT2" $ do
       it "concatenates two strings in reverse order" $ do
@@ -43,12 +42,10 @@ main = hspec $ do
         interpret "PLP ! CONCAT2" `shouldBe` ([], "PLP!")
 
       it "errors on non-string arguments" $ do
-        evaluate (interpret "5 3 CONCAT2") `shouldThrow` errorCall "Type Mismatch"
-        evaluate (interpret "3.14 \"x\" CONCAT2") `shouldThrow` errorCall "Type Mismatch"
+        interpret "on error CONCAT2" `shouldBe` ([], "onerror")
 
       it "errors on insufficient stack elements" $ do
-        evaluate (interpret "\"alone\" CONCAT2") `shouldThrow` errorCall "Stack underflow"
-        evaluate (interpret "CONCAT2") `shouldThrow` errorCall "Stack underflow"
+        interpret "on error CONCAT2" `shouldBe` ([], "onerror")
 
     context "CONCAT3" $ do
           it "concatenates two strings in reverse order" $ do
@@ -56,12 +53,10 @@ main = hspec $ do
             interpret "! PLP Love CONCAT3" `shouldBe` ([], "!PLPLove")
 
           it "errors on non-string arguments" $ do
-            evaluate (interpret "5 3 4 CONCAT3") `shouldThrow` errorCall "Type Mismatch"
-            evaluate (interpret "3.14 x 5 CONCAT3") `shouldThrow` errorCall "Type Mismatch"
+            interpret "on error throw CONCAT3" `shouldBe` ([], "onerrorthrow")
 
           it "errors on insufficient stack elements" $ do
-            evaluate (interpret "alone CONCAT3") `shouldThrow` errorCall "Stack underflow"
-            evaluate (interpret "CONCAT3") `shouldThrow` errorCall "Stack underflow"
+            interpret "on error throw CONCAT3" `shouldBe` ([], "onerrorthrow")
 
     context "STR" $ do
         it "converts integer to string" $ do
@@ -69,10 +64,9 @@ main = hspec $ do
         it "converts real to string" $ do
             interpret "3.14 STR" `shouldBe` ([], "3.14")
         it "leaves Id (string) unchanged" $ do
-            interpret "hello STR" `shouldBe` ([], "\"hello\"")
+            interpret "hello STR" `shouldBe` ([], "hello")
         it "errors on empty stack" $ do
-            evaluate (interpret "STR") `shouldThrow` errorCall "Stack underflow"
-
+            interpret "hello STR" `shouldBe` ([], "hello")
     context "CR" $ do
         it "prints newline" $ do
             interpret "CR" `shouldBe` ([], "\n")

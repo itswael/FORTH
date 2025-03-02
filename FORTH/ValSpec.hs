@@ -5,6 +5,7 @@ import Test.Hspec
 import Test.QuickCheck
 import Control.Exception (evaluate)
 import Val
+import qualified Data.Map as M
 
 main :: IO ()
 main = hspec $ do
