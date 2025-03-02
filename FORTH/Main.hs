@@ -4,6 +4,7 @@ module Main where
 
 import Interpret
 import System.Environment
+import Val (Val(..))  -- Import the Val module to bring Id into scope
 
 main :: IO ()
 main = do
@@ -11,6 +12,6 @@ main = do
     contents <- readFile fileName
     let (stack, output) = interpret contents
     if null stack
-            then
-                putStrLn output
-            else putStrLn $ "Stack is not empty: " ++ show stack
+        then
+            putStrLn output
+        else putStrLn $ "Stack is not empty: " ++ show stack
